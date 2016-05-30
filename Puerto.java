@@ -45,21 +45,31 @@ public class Puerto
      * Metodo que muestra el estado de los amarres
      */
     public void verEstadoAmarres() {
-        for(Alquiler alqui : alquileres) {    
-            System.out.println(alqui);    
+        for(int i = 0;i <alquileres.length;i++) {
+            System.out.println("Amarre nº" + i);
+            if(alquileres[i] == null) {
+                System.out.println("Libre");
+            }
+            else{
+                System.out.println("ocupado");
+                System.out.println(alquileres[i]);
+            }      
         }
     }
-    
+
     /**
      * Metodo que borra un barco de un amarre y muestra el precio;
      */
     public float liquidarAlquiler(int posicion) {
-       //guardamos el barco antes de borrarlo para mostrar el precio
-        Alquiler precio = alquileres[posicion];
-        
-        alquileres[posicion] = null;
-        return precio.getCosteAlquiler();    
+        float valor = -1;
+        if(posicion < NUMERO_AMARRES && posicion >= 0){
+            if(alquileres[posicion] != null){
+                valor = alquileres[posicion].getCosteAlquiler();
+                alquileres[posicion] = null;
+            }
+        }
+        return valor;
     }
-    
 
 }
+
