@@ -1,4 +1,4 @@
-
+import java.util.ArrayList;
 /**
  * Write a description of class Puerto here.
  * 
@@ -7,9 +7,7 @@
  */
 public class Puerto
 {
-
-    //Coleccion de obj alquiler
-    private Alquiler[] alquileres;
+    private ArrayList<Alquiler> alquileres;    
     //Guarda el numero de amarres totales
     private static final int NUMERO_AMARRES = 4;
 
@@ -18,26 +16,28 @@ public class Puerto
      */
     public Puerto()
     {
-        alquileres = new Alquiler[NUMERO_AMARRES];
+        alquileres = new ArrayList<Alquiler>();
     }
 
-    /**
-     * Metodo que crea un alquiler 
-     */
-    public int addAlquiler(int numeroDias,Cliente cliente,Barco barco)
-    {
-        Alquiler alquiler = new Alquiler(numeroDias,cliente,barco);
+    public int addAlquiler(int posicionA,int numeroDias,Cliente cliente,Barco barco){
         int posicion = -1;
-        boolean parar = false;
-        for(int i = 0; i < alquileres.length && !parar;i++) {        
-            if (alquileres[i] == null) {
-                //metemos el objeto en la posicion indicada por el contador
-                alquileres[i] = alquiler;
-                //indicamos la posicion donde se guarda, en la coleccion
-                posicion = i;
-                parar = true;
+        if (posicionA - 1 >= 0 && posicionA - 1 < NUMERO_AMARRES) {
+            if (alquileres.size() != 0) {                
+                for (int i = 0; i < alquileres.size(); i++) {
+                    if (alquileres.get(i).getAmarre() != posicionA) {                    
+                        alquileres.add(new Alquiler(posicionA, numeroDias, cliente, barco));
+                        posicion = posicionA;                    
+                    }                
+                }
             }
-        }  
+            else {                
+                alquileres.add(new Alquiler(posicionA, numeroDias, cliente, barco));
+                posicion = posicionA;               
+            }
+        }
+        else {
+            System.out.println("El amarre selecionado no existe preube otro numero");
+        }
         return posicion;
     }
 
@@ -45,15 +45,14 @@ public class Puerto
      * Metodo que muestra el estado de los amarres
      */
     public void verEstadoAmarres() {
-        for(int i = 0;i <alquileres.length;i++) {
-            System.out.println("Amarre nº" + i);
-            if(alquileres[i] == null) {
-                System.out.println("Libre");
-            }
-            else{
-                System.out.println("ocupado");
-                System.out.println(alquileres[i]);
-            }      
+        for(int i = 0 ;i < NUMERO_AMARRES;i++) {
+            for (int i2 = 0; i2 < alquileres.size();i++) {
+                if (alquileres.get(i).getAmarre() == 1 + i2 ) {
+                    System.out.println("Amarre" + (1 + i2) + "Libre");
+                } else{
+                    System.out.println("Amarre" + (1 + i2 ) +  "ocupado" + alquileres.get(i));                
+                }                              
+            }   
         }
     }
 
@@ -63,10 +62,14 @@ public class Puerto
     public float liquidarAlquiler(int posicion) {
         float valor = -1;
         if(posicion < NUMERO_AMARRES && posicion >= 0){
-            if(alquileres[posicion] != null){
-                valor = alquileres[posicion].getCosteAlquiler();
-                alquileres[posicion] = null;
+            for(int i = 0;i < alquileres.size();i++) {
+                if (alquileres.get(i).getAmarre() == posicion) {                    
+                    valor = alquileres.get(i - 1).getCosteAlquiler();
+                    alquileres.remove(posicion - 1);                                   
+                } 
             }
+        } else {
+            System.out.println("El amarre selecionado no existe preube otro numero");
         }
         return valor;
     }
